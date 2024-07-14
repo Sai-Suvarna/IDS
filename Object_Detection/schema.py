@@ -3,7 +3,34 @@ from graphene_django import DjangoObjectType
 from Core.models import IDSProductDetails  
 from graphql import GraphQLError 
 
+# from elasticsearch_dsl.query import MultiMatch
+from Core.documents import IDSProductDetailsDocument
+
+from elasticsearch_dsl.query import Bool, Fuzzy
+
 ######## ---------  GraphQL API for retrieving details based on word search   ----------  ##########
+
+from elasticsearch_dsl import Search
+from elasticsearch_dsl.query import MultiMatch
+
+from Core.documents import IDSProductDetailsDocument
+# class ProductDetailsType(DjangoObjectType):
+#     class Meta:
+#         model = IDSProductDetails
+
+# class Query(graphene.ObjectType):
+#     matching_products = graphene.List(ProductDetailsType, search_word=graphene.String())
+
+    # def resolve_matching_products(self, info, search_word):
+    #     # Fetch matching items from the database
+    #     products = IDSProductDetails.objects.filter(item__icontains=search_word)
+    #     return products
+
+    
+import graphene
+from graphene_django.types import DjangoObjectType
+from elasticsearch_dsl import Search, Q
+from Core.models import IDSProductDetails
 
 class ProductDetailsType(DjangoObjectType):
     class Meta:
@@ -13,9 +40,35 @@ class Query(graphene.ObjectType):
     matching_products = graphene.List(ProductDetailsType, search_word=graphene.String())
 
     def resolve_matching_products(self, info, search_word):
-        # Fetch matching items from the database
-        products = IDSProductDetails.objects.filter(item__icontains=search_word)
-        return products
+        # Define search fields and boost importance
+        search_fields = ['item^3', 'description^2', 'category^1']
+        
+        # Construct a query with fuzzy matching and partial matching
+        q = MultiMatch(query=search_word, fields=search_fields, fuzziness='1')
+        
+        # Perform the search using Elasticsearch DSL
+        search_results = Search(index='products').query(q)
+
+        # Execute the search and convert results to a list of IDSProductDetails instances
+        response = search_results.execute()
+        hits = [hit.to_dict() for hit in response]
+
+        # Map the dictionary hits to IDSProductDetails instances
+        product_instances = []
+        for hit in hits:
+            product_instance = IDSProductDetails(
+                productId=hit['productId'],
+                category=hit['category'],
+                item=hit['item'],
+                description=hit['description'],
+                units=hit['units'],
+                thresholdValue=hit['thresholdValue'],
+                images=hit['images']
+            )
+            product_instances.append(product_instance)
+
+        # Return the mapped instances
+        return product_instances
 
 wordsearch_schema = graphene.Schema(query=Query)
 
@@ -97,7 +150,7 @@ class UploadAndProcessImage(graphene.Mutation):
         
         except Exception as e:
             # Log the exception for debugging purposes
-            logger.error(f"Error processing image: {str(e)}")
+            # logger.error(f"Error processing image: {str(e)}")
             # Return a GraphQL error response
             return UploadAndProcessImage(objects=[], matched_items=[])
 

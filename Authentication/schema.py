@@ -1,3 +1,170 @@
+# # schema.py
+
+# import graphene
+# from graphene_django.types import DjangoObjectType
+# from graphql_jwt.decorators import login_required
+# from .models import Login
+# from django.contrib.auth.hashers import make_password, check_password
+# from graphql import GraphQLError
+# from graphql_jwt.shortcuts import get_token
+
+# # Define a GraphQL type for the Login model
+# class LoginType(DjangoObjectType):
+#     class Meta:
+#         model = Login
+
+# # Mutation to create a new Login
+# class CreateLogin(graphene.Mutation):
+#     login = graphene.Field(LoginType)
+
+#     class Arguments:
+#          # Arguments required to create a new Login
+#         username = graphene.String(required=True)
+#         phone_num = graphene.String(required=True)
+#         designation = graphene.String(required=True)
+#         location = graphene.String(required=True)
+#         business_unit = graphene.String(required=True)
+#         role = graphene.String(required=True)
+#         email = graphene.String(required=True)
+#         status = graphene.Boolean(required=True)
+#         password = graphene.String(required=True)
+
+#     def mutate(self, info, username, phone_num, designation, location, business_unit, role, email, status, password):
+#         # Create a new Login instance and save it
+#         login = Login(
+#             username=username,
+#             phone_num=phone_num,
+#             designation=designation,
+#             location=location,
+#             business_unit=business_unit,
+#             role=role,
+#             email=email,
+#             status=status,
+#             password=make_password(password)
+#         )
+#         login.save()
+#         return CreateLogin(login=login)
+
+# # Mutation to update an existing Login
+# class UpdateLogin(graphene.Mutation):
+#     login = graphene.Field(LoginType)
+
+#     class Arguments:
+#         # Arguments to update a Login, id is required
+#         id = graphene.String(required=True)
+#         username = graphene.String()
+#         phone_num = graphene.String()
+#         designation = graphene.String()
+#         location = graphene.String()
+#         business_unit = graphene.String()
+#         role = graphene.String()
+#         email = graphene.String()
+#         status = graphene.Boolean()
+#         password = graphene.String()
+
+#     def mutate(self, info, id, username=None, phone_num=None, designation=None, location=None, business_unit=None, role=None, email=None, status=None, password=None):
+#         try:
+#             # Retrieve the Login instance by id
+#             login = Login.objects.get(pk=id)
+#             # Update fields if provided
+#             if username:
+#                 login.username = username
+#             if phone_num:
+#                 login.phone_num = phone_num
+#             if designation:
+#                 login.designation = designation
+#             if location:
+#                 login.location = location
+#             if business_unit:
+#                 login.business_unit = business_unit
+#             if role:
+#                 login.role = role
+#             if email:
+#                 login.email = email
+#             if status is not None:
+#                 login.status = status
+#             if password:
+#                 login.password = make_password(password)
+#             login.save()
+#             return UpdateLogin(login=login)
+#         except Login.DoesNotExist:
+#             # Handle case where Login with given id does not exist
+#             raise GraphQLError('Login does not exist.')
+
+# # Mutation to delete a Login
+
+# class DeleteLogin(graphene.Mutation):
+#     success = graphene.Boolean()
+
+#     class Arguments:
+#         id = graphene.String(required=True)
+
+#     def mutate(self, info, id):
+#         try:
+#             # Retrieve the Login instance by id and delete it
+#             login = Login.objects.get(pk=id)
+#             login.delete()
+#             return DeleteLogin(success=True)
+#         except Login.DoesNotExist:
+#             # Handle case where Login with given id does not exist           
+#             raise GraphQLError('Login does not exist.')
+
+# # Response type for Login mutations
+# class LoginResponse(graphene.ObjectType):
+#     success = graphene.Boolean()
+#     message = graphene.String()
+#     token = graphene.String()
+#     login = graphene.Field(LoginType)
+
+# # Mutation for user login
+# class LoginMutation(graphene.Mutation):
+#     class Arguments:
+#         # Arguments required for user login
+#         username = graphene.String(required=True)
+#         password = graphene.String(required=True)
+
+#     Output = LoginResponse
+
+#     def mutate(self, info, username, password):
+#         try:
+#             # Retrieve user by username
+#             user = Login.objects.get(username=username)
+#             # Check if password matches
+#             if check_password(password, user.password):
+#                 # Generate JWT token
+#                 token = get_token(user)
+#                 return LoginResponse(success=True, login=user, message="Login successful", token=token)
+#             else:
+#                 raise GraphQLError('Invalid password')
+#         except Login.DoesNotExist:
+#             # Handle case where user with given username does not exist
+#             raise GraphQLError('User not found')
+
+# # Query to retrieve all Login instances (requires authentication)
+# class Query(graphene.ObjectType):
+#     all_logins = graphene.List(LoginType)
+
+#     @login_required
+#     def resolve_all_logins(root, info):
+#         # Resolve and return all Login instances
+#         return Login.objects.all()
+
+# # Mutation class to combine all defined mutations
+# class Mutation(graphene.ObjectType):
+
+#     create_login = CreateLogin.Field()
+#     update_login = UpdateLogin.Field()
+#     delete_login = DeleteLogin.Field()
+#     login = LoginMutation.Field()
+
+    
+# # Define the GraphQL schema with defined Query and Mutation
+# login_schema = graphene.Schema(query=Query, mutation=Mutation)
+
+
+
+
+
 
 
 # schema.py
@@ -47,7 +214,7 @@ class UpdateLogin(graphene.Mutation):
     login = graphene.Field(LoginType)
 
     class Arguments:
-        id = graphene.String(required=True)
+        userId = graphene.String(required=True)
         username = graphene.String()
         phone_num = graphene.String()
         designation = graphene.String()
@@ -58,9 +225,9 @@ class UpdateLogin(graphene.Mutation):
         status = graphene.Boolean()
         password = graphene.String()
 
-    def mutate(self, info, id, username=None, phone_num=None, designation=None, location=None, business_unit=None, role=None, email=None, status=None, password=None):
+    def mutate(self, info, userId, username=None, phone_num=None, designation=None, location=None, business_unit=None, role=None, email=None, status=None, password=None):
         try:
-            login = Login.objects.get(pk=id)
+            login = Login.objects.get(pk=userId)
             if username:
                 login.username = username
             if phone_num:
@@ -88,11 +255,11 @@ class DeleteLogin(graphene.Mutation):
     success = graphene.Boolean()
 
     class Arguments:
-        id = graphene.String(required=True)
+        userId = graphene.String(required=True)
 
-    def mutate(self, info, id):
+    def mutate(self, info, userId):
         try:
-            login = Login.objects.get(pk=id)
+            login = Login.objects.get(pk=userId)
             login.delete()
             return DeleteLogin(success=True)
         except Login.DoesNotExist:
@@ -137,9 +304,3 @@ class Mutation(graphene.ObjectType):
     login = LoginMutation.Field()
 
 login_schema = graphene.Schema(query=Query, mutation=Mutation)
-
-
-
-
-
-

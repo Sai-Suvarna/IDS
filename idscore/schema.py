@@ -894,61 +894,6 @@ class UpdatePlacement(graphene.Mutation):
 
     
 
-# class UpdatePlacement(graphene.Mutation):
-#     placements = graphene.List(PlacementType)
-#     statusCode = graphene.Int()
-#     message = graphene.String()
-
-#     class Arguments:
-#         placementId = graphene.Int(required=True)
-#         productId = graphene.Int()
-#         warehouseId = graphene.Int()
-#         aile = graphene.String()
-#         bin = graphene.String()
-#         # batchid = graphene.Int()
-
-#     @login_required
-#     def mutate(self, info, placementId, **kwargs):
-#         try:
-#             placement = Placement.objects.get(pk=placementId)
-
-#             # Get the username from the token
-#             token = info.context.META.get('HTTP_AUTHORIZATION').split(' ')[1]
-#             username = get_username_from_token(token)
-
-#             productId = kwargs.get('productId')
-#             if productId:
-#                 try:
-#                     product_instance = Product.objects.get(pk=productId)
-#                     placement.productId = product_instance
-#                 except Product.DoesNotExist:
-#                     return UpdatePlacement(statusCode=404, message=f"Product with id {productId} does not exist.")
-
-#             warehouseId = kwargs.get('warehouseId')
-#             if warehouseId:
-#                 try:
-#                     warehouse_instance = Warehouse.objects.get(pk=warehouseId)
-#                     placement.warehouseId = warehouse_instance
-#                 except Warehouse.DoesNotExist:
-#                     return UpdatePlacement(statusCode=404, message=f"Warehouse with id {warehouseId} does not exist.")
-
-        
-#             for key, value in kwargs.items():
-#                 if key in ['aile', 'bin']:
-#                     setattr(placement, key, value)
-
-#             placement.modifiedUser = username
-#             placement.save()
-
-#             # Retrieve all placements related to the updated productid
-#             placements = Placement.objects.filter(productId=placement.productId)
-
-#             return UpdatePlacement(placements=placements, statusCode=200, message="Placement updated successfully.")
-#         except Placement.DoesNotExist:
-#             return UpdatePlacement(statusCode=404, message=f"Placement with id {placementId} does not exist.")
-#         except Exception as e:
-#             return UpdatePlacement(statusCode=400, message=str(e))
-
 
 class DeletePlacement(graphene.Mutation):
     class Arguments:

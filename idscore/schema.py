@@ -1095,33 +1095,6 @@ class InventoryDetailType(graphene.ObjectType):
     quantityAvailable = graphene.String(required=False)
     invreOrderPoint = graphene.Int()
 
-# class BatchDetailType(graphene.ObjectType):
-#     batchId = graphene.Int()
-#     manufactureDate = graphene.Date()
-#     expiryDate = graphene.Date()
-#     quantity = graphene.String()
-#     createdUser = graphene.String()
-#     modifiedUser = graphene.String()
-
-
-# class PlacementType(graphene.ObjectType):
-#     productId = graphene.Field(ProductType)
-#     warehouseId = graphene.Field(WarehouseType)
-#     placementId = graphene.Int()
-#     placementQuantity = graphene.Int()
-#     aile = graphene.String()
-#     bin = graphene.String()
-#     createdUser = graphene.String()
-#     modifiedUser = graphene.String()
-#     createdTime = graphene.DateTime()
-#     modifiedTime = graphene.DateTime()    
-#     batches = graphene.List(BatchDetailType)
-
-# class PlacementDetailType(graphene.ObjectType):
-#     warehouseId = graphene.Int()
-#     warehouseName = graphene.String()
-#     placements = graphene.List(PlacementType)
-
 
 class ProductResponseType(graphene.ObjectType):
     productId = graphene.Int()
@@ -1393,78 +1366,6 @@ class Query(graphene.ObjectType):
             return None
 
 
-
-
-
-    # def resolve_all_products(self, info):
-    #     products = Product.objects.filter(rowstatus=True)
-    #     product_responses = []
-
-    #     for product in products:
-    #         inventories = Inventory.objects.filter(productId=product)
-
-    #         inventory_details = []
-    #         for inventory in inventories:
-    #             inventory_detail = {
-    #                 'inventoryId': inventory.inventoryId,
-    #                 'warehouseId': inventory.warehouseId.pk,
-    #                 'minStockLevel': inventory.minStockLevel,
-    #                 'maxStockLevel': inventory.maxStockLevel,
-    #                 'quantityAvailable': inventory.quantityAvailable,
-    #                 'invreOrderPoint': inventory.invreOrderPoint,
-
-    #         }
-    #             inventory_details.append(inventory_detail)
-
-    #         images_list = product.images
-    #         if isinstance(images_list, str):
-    #             images_list = json.loads(images_list)
-
-    #     # Fetch category name using the category ID
-    #         category = Category.objects.get(pk=product.productCategory)
-    #         category_name = category.name
-
-    #     # Fetch placements associated with the product
-    #         placements = Placement.objects.filter(productId=product, rowstatus=True)
-
-    #         placement_details = []
-    #         for placement in placements:
-    #             placement_detail = {
-    #                 'placementId': placement.placementId,
-    #                 # 'warehouseid': placement.warehouseid.pk,
-    #                 'warehouseName': placement.warehouseId.warehouseName,  
-    #                 'aile': placement.aile,
-    #                 'bin': placement.bin,
-    #                 # 'batchid': placement.batchid.pk
-    #         }
-    #             placement_details.append(placement_detail)
-
-    #         product_response = ProductResponseType(
-    #             productId=product.pk,
-    #             productCode=product.productCode,
-    #             qrCode=product.qrCode,
-    #             productName=product.productName,
-    #             productDescription=product.productDescription,
-    #             productCategory=str(product.productCategory),
-    #             category_name=category_name,
-    #             reOrderPoint=product.reOrderPoint,
-    #             brand=product.brand,
-    #             weight=product.weight,
-    #             dimensions=product.dimensions,
-    #             images=images_list,
-    #             createdUser=product.createdUser,
-    #             modifiedUser=product.modifiedUser,
-    #             createdTime=product.createdTime,
-    #             modifiedTime=product.modifiedTime,
-    #             rowstatus=product.rowstatus,
-    #             inventoryDetails=inventory_details,
-    #             placementDetails=placement_details,  # Include placement details
-    #             # batchDetails=batch_details  # Include batch details
-    #     )
-    #         product_responses.append(product_response)
-
-    #     return product_responses
-    
     # Fetch a single category by id where rowstatus=True
     @login_required                       
     def resolve_category(self, info, id):

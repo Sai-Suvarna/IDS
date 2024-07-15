@@ -29,7 +29,7 @@ class Product(models.Model):
     rowstatus = models.BooleanField(default=True)  # Boolean field for row status
 
     def __str__(self):
-        return self.productname  # String representation of the product
+        return self.productName  # String representation of the product
     
 # Model for inventory
 class Inventory(models.Model):
@@ -47,7 +47,7 @@ class Inventory(models.Model):
     rowstatus = models.BooleanField(default=True)  # Boolean field for row status
 
     def __str__(self):
-        return f"Inventory for {self.productid.productname}"  # String representation of the inventory entry
+        return f"Inventory for {self.productId.productName}"  # String representation of the inventory entry
 
     
 
@@ -64,7 +64,7 @@ class Warehouse(models.Model):
     rowstatus = models.BooleanField(default=True)  # Boolean field for row status
 
     def __str__(self):
-        return self.warehousename  # String representation of the warehouse
+        return self.warehouseName  # String representation of the warehouse
 
 # Model for locations
 class Location(models.Model):
@@ -78,7 +78,7 @@ class Location(models.Model):
     rowstatus = models.BooleanField(default=True)  # Boolean field for row status
 
     def __str__(self):
-        return self.locationname  # String representation of the location
+        return self.locationName  # String representation of the location
 
 # # Model for batches of products
 class Batch(models.Model):
@@ -94,7 +94,7 @@ class Batch(models.Model):
     rowstatus = models.BooleanField(default=True)  # Boolean field for row status
 
     def __str__(self):
-        return f'Batch {self.batchid} for {self.productid}'  # String representation of the batch
+        return f'Batch {self.batchId} for {self.productId}'  # String representation of the batch
 
 # Model for placement of products in warehouses
 class Placement(models.Model):
@@ -112,7 +112,7 @@ class Placement(models.Model):
     rowstatus = models.BooleanField(default=True)  # Boolean field for row status
 
     def __str__(self):
-        return f'Placement {self.placementId} - Product: {self.productid}, Warehouse: {self.warehouseid}'  # String representation of the placement entry
+        return f'Placement {self.placementId} - Product: {self.productId}, Warehouse: {self.warehouseId}'  # String representation of the placement entry
 
 
 class DeleteRequest(models.Model):
